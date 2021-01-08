@@ -25,71 +25,74 @@ class RecordingHttpClient(HttpClient):
 
     @staticmethod
     async def get(url: str, payload: dict = None, headers: dict = None) -> dict:
-        async with aiohttp.ClientSession(
-            headers=headers, raise_for_status=True
-        ) as session:
-            response = await session.get(
-                RecordingHttpClient.url(url), headers=headers, json=payload
-            )
-            result = await response.json()
 
-            ##
-            write_data = {
-                "url": "{url}"
-                + url.replace(
-                    str(RecordingHttpClient.user_id), RecordingHttpClient.fake_user_id
-                ),
-                "body": payload,
-                "payload": result,
-                "method": "GET",
-            }
+        raw_data = await HttpClient.get(url, payload=payload, headers=headers)
+        return RecordingHttpClient.redacted(raw_data)
+        # async with aiohttp.ClientSession(
+        #     headers=headers, raise_for_status=True
+        # ) as session:
+        #     response = await session.get(
+        #         RecordingHttpClient.url(url), headers=headers, json=payload
+        #     )
+        #     result = await response.json()
 
-            RecordingHttpClient.state.append(write_data)
+        #     ##
+        #     write_data = {
+        #         "url": "{url}"
+        #         + url.replace(
+        #             str(RecordingHttpClient.user_id), RecordingHttpClient.fake_user_id
+        #         ),
+        #         "body": payload,
+        #         "payload": result,
+        #         "method": "GET",
+        #     }
 
-            return result
+        #     RecordingHttpClient.state.append(write_data)
 
-    @staticmethod
-    async def post(url: str, payload: dict, headers: dict = None) -> dict:
-        async with aiohttp.ClientSession(
-            headers=headers, raise_for_status=True
-        ) as session:
-            response = await session.post(
-                RecordingHttpClient.url(url), headers=headers, json=payload
-            )
-            result = await response.json()
-            write_data = {
-                "url": "{url}"
-                + url.replace(
-                    str(RecordingHttpClient.user_id), RecordingHttpClient.fake_user_id
-                ),
-                "body": payload,
-                "payload": result,
-                "method": "POST",
-            }
+        #     return result
 
-            RecordingHttpClient.state.append(write_data)
+    # @staticmethod
+    # async def post(url: str, payload: dict, headers: dict = None) -> dict:
+    #     async with aiohttp.ClientSession(
+    #         headers=headers, raise_for_status=True
+    #     ) as session:
+    #         response = await session.post(
+    #             RecordingHttpClient.url(url), headers=headers, json=payload
+    #         )
+    #         result = await response.json()
+    #         write_data = {
+    #             "url": "{url}"
+    #             + url.replace(
+    #                 str(RecordingHttpClient.user_id), RecordingHttpClient.fake_user_id
+    #             ),
+    #             "body": payload,
+    #             "payload": result,
+    #             "method": "POST",
+    #         }
 
-            return result
+    #         RecordingHttpClient.state.append(write_data)
 
-    @staticmethod
-    async def delete(url: str, payload: dict = None, headers: dict = None) -> bool:
-        async with aiohttp.ClientSession(
-            headers=headers, raise_for_status=True
-        ) as session:
-            response = await session.delete(
-                HttpClient.url(url), headers=headers, json=payload
-            )
-            result = await response.json()
-            write_data = {
-                "url": "{url}" + url,
-                "body": payload,
-                "payload": result,
-                "method": "DELETE",
-            }
+    #         return result
 
-            RecordingHttpClient.state.append(write_data)
+    # @staticmethod
+    # async def delete(url: str, payload: dict = None, headers: dict = None) -> bool:
+    #     async with aiohttp.ClientSession(
+    #         headers=headers, raise_for_status=True
+    #     ) as session:
+    #         response = await session.delete(
+    #             HttpClient.url(url), headers=headers, json=payload
+    #         )
+    #         result = await response.json()
+    #         write_data = {
+    #             "url": "{url}" + url,
+    #             "body": payload,
+    #             "payload": result,
+    #             "method": "DELETE",
+    #         }
 
-            return response.status <= 399
+    #         RecordingHttpClient.state.append(write_data)
+
+    #         return response.status <= 399
 
     @staticmethod
     def redacted(result, context: dict = None):
@@ -153,37 +156,39 @@ class RecordingHttpClient(HttpClient):
 @pytest.fixture
 async def tracing_client(request, mocker):
     mocker.patch("stake.client.HttpClient", new=RecordingHttpClient)
-    RecordingHttpClient.state = []
-    function_name = f"{request.node.module.__name__}.{request.node.name}"
-    filename = pkg_resources.resource_filename(
-        __name__, f"fixtures/{function_name}.json"
-    )
-    if os.path.exists(filename):
-        fixtures = json.load(open(filename))
-        with aioresponses() as m:
-            mock_datas = fixtures[function_name]
-            assert mock_datas
-            for mock_data in mock_datas:
-                m.add(
-                    mock_data["url"].format(url=STAKE_URL),
-                    method=mock_data.get("method"),
-                    body=mock_data["body"],
-                    payload=mock_data["payload"],
-                )
-            async with StakeClient() as client:
-                yield client
+    async with StakeClient() as client:
+        yield client
+    # RecordingHttpClient.state = []
+    # function_name = f"{request.node.module.__name__}.{request.node.name}"
+    # filename = pkg_resources.resource_filename(
+    #     __name__, f"fixtures/{function_name}.json"
+    # )
+    # if os.path.exists(filename):
+    #     fixtures = json.load(open(filename))
+    #     with aioresponses() as m:
+    #         mock_datas = fixtures[function_name]
+    #         assert mock_datas
+    #         for mock_data in mock_datas:
+    #             m.add(
+    #                 mock_data["url"].format(url=STAKE_URL),
+    #                 method=mock_data.get("method"),
+    #                 body=mock_data["body"],
+    #                 payload=mock_data["payload"],
+    #             )
+    #         async with StakeClient() as client:
+    #             yield client
 
-    else:
-        async with StakeClient() as client:
-            yield client
-            state = deepcopy(client.http_client.state)
-            RecordingHttpClient.user_id = str(client.user.id)
-            state = RecordingHttpClient.redacted(state)
-            json.dump(
-                {function_name: state},
-                open(f"tests/fixtures/{function_name}.json", "w"),
-                indent=4,
-            )
+    # else:
+    #     async with StakeClient() as client:
+    #         yield client
+    #         state = deepcopy(client.http_client.state)
+    #         RecordingHttpClient.user_id = str(client.user.id)
+    #         state = RecordingHttpClient.redacted(state)
+    #         json.dump(
+    #             {function_name: state},
+    #             open(f"tests/fixtures/{function_name}.json", "w"),
+    #             indent=4,
+    #         )
 
 
 @pytest.fixture(scope="session")

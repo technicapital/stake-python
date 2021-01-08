@@ -7,9 +7,10 @@ async def test_show_portfolio(tracing_client):
 
 
 @pytest.mark.asyncio
-async def test_find_products_by_name(tracing_client):
+async def test_find_products_by_name(tracing_client, snapshot):
     from stake.product import ProductSearchByName
 
     request = ProductSearchByName(keyword="techno")
     products = await tracing_client.products.search(request)
+    snapshot.assert_match(products)
     assert len(products) == 10

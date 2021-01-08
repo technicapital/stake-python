@@ -28,6 +28,7 @@ pytest-mock = "^3.3.0"
 aioresponses = "0.7.1"
 faker = "^4.14.0"
 coverage-badge = "^1.0.1"
+snapshottest = "^0.6.0"
 
 [tool.isort]
 profile = "black"
