@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 from pydantic.fields import Field
 
-from stake.common import camelcase
+from .common import camelcase
 
 
 class User(BaseModel):

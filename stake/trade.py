@@ -5,8 +5,8 @@ from typing import Optional, Union
 
 from pydantic import BaseModel, Field, validator
 
-from stake.common import BaseClient, camelcase
-from stake.constant import Url
+from .common import BaseClient, camelcase
+from .constant import Url
 
 failed_transaction_regex = re.compile(r"^[0-9]{4}")
 

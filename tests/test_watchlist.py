@@ -1,6 +1,6 @@
 import pytest
 
-from stake.watchlist import AddToWatchlistRequest, RemoveFromWatchlistRequest
+from .watchlist import AddToWatchlistRequest, RemoveFromWatchlistRequest
 
 # flake8: noqa
 

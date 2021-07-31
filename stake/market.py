@@ -3,8 +3,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
-from stake.common import BaseClient, camelcase
-from stake.constant import Url
+from .common import BaseClient, camelcase
+from .constant import Url
 
 __all__ = ["MarketStatus"]
 

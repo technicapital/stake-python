@@ -11,8 +11,8 @@ import pytest
 from aioresponses import aioresponses
 from dotenv import load_dotenv
 
-from stake.client import HttpClient, StakeClient
-from stake.constant import STAKE_URL
+from .client import HttpClient, StakeClient
+from .constant import STAKE_URL
 
 load_dotenv()
 

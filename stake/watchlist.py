@@ -3,9 +3,9 @@ from typing import List, Union
 
 from pydantic import BaseModel, Field
 
-from stake.common import BaseClient, camelcase
-from stake.constant import Url
-from stake.product import Product
+from .common import BaseClient, camelcase
+from .constant import Url
+from .product import Product
 
 __all__ = ["AddToWatchlistRequest", "RemoveFromWatchlistRequest"]
 

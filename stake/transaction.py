@@ -5,8 +5,8 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 from pydantic.types import UUID, UUID4
 
-from stake.common import BaseClient, camelcase
-from stake.constant import Url
+from .common import BaseClient, camelcase
+from .constant import Url
 
 __all__ = ["TransactionRecordRequest"]
 

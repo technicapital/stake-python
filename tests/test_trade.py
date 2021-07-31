@@ -1,7 +1,7 @@
 import pytest
 
-from stake.order import CancelOrderRequest
-from stake.trade import LimitBuyRequest, MarketBuyRequest, StopBuyRequest
+from .order import CancelOrderRequest
+from .trade import LimitBuyRequest, MarketBuyRequest, StopBuyRequest
 
 
 @pytest.mark.asyncio

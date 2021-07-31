@@ -6,7 +6,7 @@ import aiohttp
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
-from stake import (
+from . import (
     constant,
     equity,
     funding,
@@ -20,7 +20,7 @@ from stake import (
     user,
     watchlist,
 )
-from stake.common import camelcase
+from .common import camelcase
 
 load_dotenv()
 

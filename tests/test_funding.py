@@ -1,6 +1,6 @@
 import pytest
 
-from stake.funding import FundingRequest
+from .funding import FundingRequest
 
 
 @pytest.mark.asyncio

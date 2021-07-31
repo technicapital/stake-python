@@ -3,9 +3,9 @@ import asyncio
 import aiohttp
 import pytest
 
-from stake.client import HttpClient
-from stake.constant import Url
-from stake.product import Product
+from .client import HttpClient
+from .constant import Url
+from .product import Product
 
 
 @pytest.mark.asyncio
@@ -15,7 +15,7 @@ async def test_show_portfolio(tracing_client):
 
 @pytest.mark.asyncio
 async def test_find_products_by_name(tracing_client):
-    from stake.product import ProductSearchByName
+    from .product import ProductSearchByName
 
     request = ProductSearchByName(keyword="techno")
     products = await tracing_client.products.search(request)

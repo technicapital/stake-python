@@ -3,8 +3,8 @@ from typing import List, Optional
 
 import pydantic
 
-from stake.common import BaseClient
-from stake.constant import Url
+from .common import BaseClient
+from .constant import Url
 
 __all__ = ["RatingsRequest"]
 

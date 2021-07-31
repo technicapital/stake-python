@@ -1,7 +1,7 @@
 import pytest
 
 from stake import CredentialsLoginRequest, SessionTokenLoginRequest, StakeClient
-from stake.client import InvalidLoginException
+from .client import InvalidLoginException
 
 
 def test_credentials_login_serializing():

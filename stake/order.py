@@ -4,8 +4,8 @@ from typing import List, Union
 
 from pydantic import BaseModel, Field
 
-from stake.common import BaseClient, SideEnum, camelcase
-from stake.constant import Url
+from .common import BaseClient, SideEnum, camelcase
+from .constant import Url
 
 __all__ = ["OrderTypeEnum", "CancelOrderRequest"]
 

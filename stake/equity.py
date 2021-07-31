@@ -4,8 +4,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-from stake.common import BaseClient, SideEnum, camelcase
-from stake.constant import Url
+from .common import BaseClient, SideEnum, camelcase
+from .constant import Url
 
 
 class EquityCategory(str, Enum):
