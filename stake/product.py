@@ -28,7 +28,7 @@ class Instrument(BaseModel):
 
 
 class Product(BaseModel):
-    id: UUID4
+    id: str
     instrument_type_id: Optional[str] = Field(None, alias="instrumentTypeID")
     symbol: str
     description: str
